@@ -1,4 +1,5 @@
 #include <iostream>
+#include "absl/strings/str_cat.h"
 #include "net/third_party/quiche/src/quic/myquic/myquic_client_thread.h"
 #include "net/third_party/quiche/src/quic/core/quic_epoll_alarm_factory.h"
 #include "net/quic/platform/impl/quic_epoll_clock.h"
@@ -10,7 +11,7 @@ std::unique_ptr<MyQuicClient> MyQuicClientFactory::CreateClient(
     ParsedQuicVersionVector versions,
     std::unique_ptr<ProofVerifier> verifier) {
   QuicSocketAddress addr =
-      tools::LookupAddress(host_for_lookup, quiche::QuicheStrCat(port));
+      tools::LookupAddress(host_for_lookup, absl::StrCat(port));
   if (!addr.IsInitialized()) {
     QUIC_LOG(ERROR) << "Unable to resolve address: " << host_for_lookup;
     return nullptr;

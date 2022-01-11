@@ -45,6 +45,13 @@ class MyQuicToyClient
   }
   void OnStopSendingReceived(
       const quic::QuicStopSendingFrame& /*frame*/) override {}
+  virtual void OnNewConnectionIdSent(
+      const QuicConnectionId& server_connection_id,
+      const QuicConnectionId& new_connection_id) override {}
+
+  // Called when a ConnectionId has been retired.
+  virtual void OnConnectionIdRetired(
+      const QuicConnectionId& server_connection_id) override {}
   void set_bind_to_address(QuicIpAddress address) {
     bind_to_address_ = address;
   }

@@ -43,6 +43,7 @@ size_t MyQuicTransportStream::Read(char* buffer, size_t buffer_size) {
   iov.iov_len = buffer_size;
   const size_t result = sequencer()->Readv(&iov, 1);
   if (sequencer()->IsClosed()) {
+    OnFinRead();
     MaybeNotifyFinRead();
   }
   return result;
@@ -58,7 +59,7 @@ size_t MyQuicTransportStream::Read(std::string* output) {
   return bytes_read;
 }
 
-bool MyQuicTransportStream::Write(quiche::QuicheStringPiece data) {
+bool MyQuicTransportStream::Write(absl::string_view data) {
   if (!CanWrite()) {
     return false;
   }
@@ -70,6 +71,7 @@ bool MyQuicTransportStream::Write(quiche::QuicheStringPiece data) {
   QuicMemSlice memslice(std::move(buffer), data.size());
   QuicConsumedData consumed =
       WriteMemSlices(QuicMemSliceSpan(&memslice), /*fin=*/false);
+
 
   if (consumed.bytes_consumed == data.size()) {
     return true;
@@ -86,17 +88,18 @@ bool MyQuicTransportStream::Write(quiche::QuicheStringPiece data) {
   return false;
 }
 bool MyQuicTransportStream::Write(const char*data,size_t size,bool fin){
-    if(!data&&fin){
-        return SendFin();
-    }
-    if (!CanWrite()) {
-    return false;
-    }
+  if(!data&&fin){
+      return SendFin();
+  }
+  if (!CanWrite()) {
+      return false;
+  }
+
   QuicUniqueBufferPtr buffer = MakeUniqueBuffer(
       session()->connection()->helper()->GetStreamSendBufferAllocator(),
       size);
-  memcpy(buffer.get(), data,size);
-  QuicMemSlice memslice(std::move(buffer), size);
+  memcpy(buffer.get(), data, size);
+  QuicMemSlice memslice(std::move(buffer),size);
   QuicConsumedData consumed =
       WriteMemSlices(QuicMemSliceSpan(&memslice),fin);
 
@@ -141,6 +144,7 @@ size_t MyQuicTransportStream::ReadableBytes() const {
 
 void MyQuicTransportStream::OnDataAvailable() {
   if (sequencer()->IsClosed()) {
+    OnFinRead();
     MaybeNotifyFinRead();
     return;
   }
@@ -164,15 +168,11 @@ void MyQuicTransportStream::OnCanWriteNewData() {
     visitor_->OnCanWrite();
   }
 }
-void MyQuicTransportStream::TryCloseReadSide(){
-    CloseReadSide();
-}
 void MyQuicTransportStream::MaybeNotifyFinRead() {
   if (visitor_ == nullptr || fin_read_notified_) {
     return;
   }
   fin_read_notified_ = true;
   visitor_->OnFinRead();
-  OnFinRead();
 }
 }  // namespace quic

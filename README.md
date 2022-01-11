@@ -1,28 +1,9 @@
 # quic-demo
 test quic transport  
-it depends on [naiveproxy](https://github.com/klzgrad/naiveproxy).   
+it depends on [naiveproxy](https://github.com/klzgrad/naiveproxy). (v89.0.4389.72)   
 1 Put myquic file under net/third_party/quiche/src/quic/.  
 2 Find the postion of epoll_quic_server in BUILD.gn under (net/third_party/quiche), add three conponnets(myquic_main, myquic_client,myquic_server).  
 ```
-  executable("epoll_quic_server") {
-    sources = [
-      "src/quic/tools/quic_epoll_server_factory.cc",
-      "src/quic/tools/quic_epoll_server_factory.h",
-      "src/quic/tools/quic_server_bin.cc",
-      "src/quic/tools/quic_toy_server.cc",
-      "src/quic/tools/quic_toy_server.h",
-    ]
-    deps = [
-      "//base",
-      "//net",
-      "//net:epoll_quic_tools",
-      "//net:epoll_server",
-      "//net:simple_quic_tools",
-      "//third_party/boringssl",
-    ]
-  }
-
-
   executable("myquic_main") {
     sources = [
       "src/quic/myquic/mylog_main.cc",
@@ -38,6 +19,8 @@ it depends on [naiveproxy](https://github.com/klzgrad/naiveproxy).
       "src/quic/myquic/myquic_client_bin.cc",
       "src/quic/myquic/myquic_toy_client.h",
       "src/quic/myquic/myquic_toy_client.cc",
+      "src/quic/myquic/myquic_client_thread.h",
+      "src/quic/myquic/myquic_client_thread.cc",
     ]
     deps = [
       "//base",
@@ -48,14 +31,11 @@ it depends on [naiveproxy](https://github.com/klzgrad/naiveproxy).
       "//third_party/boringssl",
     ]
   }
-
-  executable("epoll_quic_server") {
+  executable("myquic_server") {
     sources = [
-      "src/quic/tools/quic_epoll_server_factory.cc",
-      "src/quic/tools/quic_epoll_server_factory.h",
-      "src/quic/tools/quic_server_bin.cc",
-      "src/quic/tools/quic_toy_server.cc",
-      "src/quic/tools/quic_toy_server.h",
+      "src/quic/myquic/myquic_server_bin.cc",
+      "src/quic/myquic/myquic_toy_server.h",
+      "src/quic/myquic/myquic_toy_server.cc",
     ]
     deps = [
       "//base",

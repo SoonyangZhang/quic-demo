@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 #pragma once
-
+#include "absl/strings/string_view.h"
 #include "url/gurl.h"
 #include "url/origin.h"
 #include "net/third_party/quiche/src/quic/core/quic_connection.h"
@@ -12,7 +12,6 @@
 #include "net/third_party/quiche/src/quic/quic_transport/quic_transport_protocol.h"
 #include "net/third_party/quiche/src/quic/myquic/myquic_transport_session_interface.h"
 #include "net/third_party/quiche/src/quic/myquic/myquic_transport_stream.h"
-#include "net/third_party/quiche/src/common/platform/api/quiche_string_piece.h"
 #include "net/third_party/quiche/src/quic/myquic/myquic_protocol.h"
 #include "net/third_party/quiche/src/quic/myquic/myquic_channel.h"
 #include "net/third_party/quiche/src/quic/platform/api/quic_epoll.h"
@@ -32,8 +31,8 @@ class QUIC_EXPORT_PRIVATE MyQuicTransportServerSession
                              MyQuicBackend *backend,
                              MyQuicContext *context);
   virtual ~MyQuicTransportServerSession();
-  std::vector<quiche::QuicheStringPiece>::const_iterator SelectAlpn(
-      const std::vector<quiche::QuicheStringPiece>& alpns) const override {
+  std::vector<absl::string_view>::const_iterator SelectAlpn(
+      const std::vector<absl::string_view>& alpns) const override {
     return std::find(alpns.cbegin(), alpns.cend(), QuicTransportAlpn());
   }
 

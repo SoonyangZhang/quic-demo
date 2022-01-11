@@ -13,7 +13,6 @@ void ServerEchoChannel::OnFinRead() {
   QUIC_DVLOG(1) << "Finished receiving data on stream " << stream_->id()
                 << ", queueing up the echo";
  fin_=true;
- stream_->TryCloseReadSide();
 }
 void ServerEchoChannel::OnCanWrite() {
     std::cout<<"on serer can write"<<std::endl;
@@ -39,7 +38,6 @@ void MockReadChannel::OnCanRead(){
 
 void MockReadChannel::OnFinRead()  {
   QUIC_DVLOG(1) << "Finished receiving data on stream " << stream_->id();
-  stream_->TryCloseReadSide();
 }
 void MockReadChannel::OnCanWrite()  { QUIC_NOTREACHED(); }
 void MockReadChannel::OnDestroy() {
@@ -55,7 +53,6 @@ void MockWriteChannel::OnCanRead()  {
 }
 void MockWriteChannel::OnFinRead()  {
   QUIC_DVLOG(1) << "Finished receiving data on stream " << stream_->id();
-  stream_->TryCloseReadSide();
 }
 void MockWriteChannel::OnCanWrite()  { QUIC_NOTREACHED(); }
 void MockWriteChannel::OnDestroy()  {

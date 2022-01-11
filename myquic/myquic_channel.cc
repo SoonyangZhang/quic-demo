@@ -35,7 +35,6 @@ void BidirectionalChannel::OnCanRead()  {
 void BidirectionalChannel::OnFinRead()  {
   QUIC_DVLOG(1) << "Finished receiving data on stream " << stream_->id()
                 << ", queueing up the echo";
-    stream_->TryCloseReadSide();
 }
 void BidirectionalChannel::OnCanWrite()  { 
     std::cout<<"on can write new data"<<std::endl;   

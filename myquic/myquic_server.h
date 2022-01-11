@@ -11,6 +11,7 @@
 #pragma once
 #include <memory>
 #include <deque>
+#include "absl/strings/string_view.h"
 #include "net/third_party/quiche/src/quic/core/crypto/quic_crypto_server_config.h"
 #include "net/third_party/quiche/src/quic/core/quic_config.h"
 #include "net/third_party/quiche/src/quic/core/quic_epoll_connection_helper.h"
@@ -21,7 +22,6 @@
 #include "net/third_party/quiche/src/quic/platform/api/quic_epoll.h"
 #include "net/third_party/quiche/src/quic/platform/api/quic_socket_address.h"
 #include "net/third_party/quiche/src/quic/tools/quic_spdy_server_base.h"
-#include "net/third_party/quiche/src/common/platform/api/quiche_string_piece.h"
 #include "net/third_party/quiche/src/quic/myquic/myquic_channel.h"
 #include "net/third_party/quiche/src/quic/myquic/myquic_protocol.h"
 #include "net/third_party/quiche/src/quic/myquic/myquic_context.h"
@@ -75,7 +75,7 @@ class MyQuicServer : public QuicSpdyServerBase,
     crypto_config_.set_chlo_multiplier(multiplier);
   }
 
-  void SetPreSharedKey(quiche::QuicheStringPiece key) {
+  void SetPreSharedKey(absl::string_view key) {
     crypto_config_.set_pre_shared_key(key);
   }
 

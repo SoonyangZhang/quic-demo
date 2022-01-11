@@ -71,14 +71,14 @@ MyQuicInnerTransportClientSession::~MyQuicInnerTransportClientSession(){
     }
     endpoint_=nullptr;
 }
-void MyQuicInnerTransportClientSession::OnAlpnSelected(
-    quiche::QuicheStringPiece alpn) {
+void MyQuicInnerTransportClientSession::OnAlpnSelected(absl::string_view alpn) {
   // Defense in-depth: ensure the ALPN selected is the desired one.
   if (alpn != QuicTransportAlpn()) {
     QUIC_BUG << "QuicTransport negotiated non-QuicTransport ALPN: " << alpn;
     connection()->CloseConnection(
         QUIC_INTERNAL_ERROR, "QuicTransport negotiated non-QuicTransport ALPN",
         ConnectionCloseBehavior::SEND_CONNECTION_CLOSE_PACKET);
+    return;
     return;
   }
   alpn_received_ = true;
@@ -176,9 +176,10 @@ void MyQuicInnerTransportClientSession::SendIndication() {
       << " instead of expected " << MyQuicClientIndicationStream();
   ClientIndication* client_indication = client_indication_owned.get();
   ActivateStream(std::move(client_indication_owned));
-
-  client_indication->WriteOrBufferData(SerializeClientIndication(),
-                                       /*fin=*/true, nullptr);
+  
+  std::string req=SerializeClientIndication();
+  absl::string_view view(req.data(),req.size());
+  client_indication->WriteOrBufferData(view,/*fin=*/true, nullptr);
   // Defense in depth: never set the ready bit unless ALPN has been confirmed.
   if (!alpn_received_) {
     QUIC_BUG << "ALPN confirmation missing after handshake complete";
@@ -224,8 +225,7 @@ void MyQuicInnerTransportClientSession::ClientIndication::OnDataAvailable(){
         OnFinRead();
     }
 }
-void MyQuicInnerTransportClientSession::OnMessageReceived(
-    quiche::QuicheStringPiece message) {
+void MyQuicInnerTransportClientSession::OnMessageReceived(absl::string_view message) {
     //visitor_->OnDatagramReceived(message);
 }
 

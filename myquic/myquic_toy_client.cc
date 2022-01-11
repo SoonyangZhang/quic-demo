@@ -19,13 +19,11 @@
 #include "net/third_party/quiche/src/quic/platform/api/quic_system_event_loop.h"
 #include "net/third_party/quiche/src/quic/tools/fake_proof_verifier.h"
 #include "net/third_party/quiche/src/quic/tools/quic_url.h"
-#include "net/third_party/quiche/src/common/platform/api/quiche_string_piece.h"
 #include "net/third_party/quiche/src/common/platform/api/quiche_text_utils.h"
 
 namespace {
 
 using quic::QuicUrl;
-using quiche::QuicheStringPiece;
 using quiche::QuicheTextUtils;
 
 }  // namespace

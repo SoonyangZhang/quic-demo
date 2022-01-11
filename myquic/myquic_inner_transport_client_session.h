@@ -6,7 +6,7 @@
 
 #include <cstdint>
 #include <memory>
-
+#include "absl/strings/string_view.h"
 #include "url/gurl.h"
 #include "url/origin.h"
 #include "net/third_party/quiche/src/quic/core/crypto/quic_crypto_client_config.h"
@@ -22,7 +22,6 @@
 #include "net/third_party/quiche/src/quic/platform/api/quic_containers.h"
 #include "net/third_party/quiche/src/quic/quic_transport/quic_transport_protocol.h"
 #include "net/third_party/quiche/src/quic/myquic/myquic_transport_session_interface.h"
-#include "net/third_party/quiche/src/common/platform/api/quiche_string_piece.h"
 #include "net/third_party/quiche/src/quic/myquic/myquic_transport_stream.h"
 #include "net/third_party/quiche/src/quic/myquic/myquic_channel.h"
 #include "net/third_party/quiche/src/quic/platform/api/quic_epoll.h"
@@ -48,7 +47,7 @@ class QUIC_EXPORT_PRIVATE MyQuicInnerTransportClientSession
   std::vector<std::string> GetAlpnsToOffer() const override {
     return std::vector<std::string>({QuicTransportAlpn()});
   }
-  void OnAlpnSelected(quiche::QuicheStringPiece alpn) override;
+  void OnAlpnSelected(absl::string_view alpn) override;
   bool alpn_received() const { return alpn_received_; }
 
   void CryptoConnect() { crypto_stream_->CryptoConnect(); }
@@ -85,7 +84,7 @@ class QUIC_EXPORT_PRIVATE MyQuicInnerTransportClientSession
 
   void SetDefaultEncryptionLevel(EncryptionLevel level) override;
   void OnTlsHandshakeComplete() override;
-  void OnMessageReceived(quiche::QuicheStringPiece message) override;
+  void OnMessageReceived(absl::string_view message) override;
 
   
   using QuicSession::CanOpenNextOutgoingBidirectionalStream;

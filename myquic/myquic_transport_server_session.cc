@@ -15,7 +15,6 @@
 #include "net/third_party/quiche/src/quic/core/quic_types.h"
 #include "net/third_party/quiche/src/quic/quic_transport/quic_transport_protocol.h"
 #include "net/third_party/quiche/src/common/platform/api/quiche_str_cat.h"
-#include "net/third_party/quiche/src/common/platform/api/quiche_string_piece.h"
 #include "net/third_party/quiche/src/quic/myquic/myquic_transport_stream.h"
 #include "net/third_party/quiche/src/quic/platform/api/quic_logging.h"
 #include <iostream>
@@ -103,8 +102,8 @@ void MyQuicTransportServerSession::ClientIndication::OnDataAvailable() {
             std::string reply;
             reply.swap(buffer_);
             reply[0]=INDI_RES;
-            quiche::QuicheStringPiece out(reply.data(), reply.length());
-            WriteOrBufferData(out,true,nullptr);              
+            absl::string_view view(reply.data(),reply.size());
+            WriteOrBufferData(view,true,nullptr);              
         }   
     }    
     if (sequencer()->IsClosed()) {
